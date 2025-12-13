@@ -63,6 +63,13 @@ $ mkdir -p ~/.config/tmux
 $ ln -s /path/to/oh-my-tmux/.tmux.conf ~/.config/tmux/tmux.conf
 $ cp /path/to/oh-my-tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
 ```
+**Manual installation and making it editable `~/.config/tmux`**
+```
+$ mkdir -p ~/.config/tmux
+$ git clone --single-branch https://github.com/gpakosz/.tmux.git ~/.config/tmux/oh-my-tmux
+$ ln -s ~/.config/tmux/oh-my-tmux/.tmux.conf ~/.config/tmux/tmux.conf
+$ ln -s ~/.config/tmux/oh-my-tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
+```
 ⚠️ When installing `$XDG_CONFIG_HOME/tmux` or `~/.config/tmux`, the configuration
 file names don't have a leading `.` character.
 
