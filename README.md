@@ -37,20 +37,20 @@ You can install Oh my tmux! at any of the following locations:
 
 Copy the following command and paste it in your terminal.
 ```
-curl -fsSL "https://github.com/gpakosz/.tmux/raw/refs/heads/master/install.sh#$(date +%s)" | bash
+curl -fsSL "https://github.com/amartincodes/.tmux/raw/refs/heads/master/install.sh#$(date +%s)" | bash
 ```
 
 **Manual installation in `~`**
 ```
 $ cd
-$ git clone --single-branch https://github.com/gpakosz/.tmux.git
+$ git clone --single-branch https://github.com/amartincodes/.tmux.git
 $ ln -s -f .tmux/.tmux.conf
 $ cp .tmux/.tmux.conf.local .
 ```
 
 **Manual installation in `$XDG_CONFIG_HOME/tmux`**
 ```
-$ git clone --single-branch https://github.com/gpakosz/.tmux.git "/path/to/oh-my-tmux"
+$ git clone --single-branch https://github.com/amartincodes/.tmux.git "/path/to/oh-my-tmux"
 $ mkdir -p "$XDG_CONFIG_HOME/tmux"
 $ ln -s /path/to/oh-my-tmux/.tmux.conf "$XDG_CONFIG_HOME/tmux/tmux.conf"
 $ cp /path/to/oh-my-tmux/.tmux.conf.local "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
@@ -58,7 +58,7 @@ $ cp /path/to/oh-my-tmux/.tmux.conf.local "$XDG_CONFIG_HOME/tmux/tmux.conf.local
 
 **Manual installation `~/.config/tmux`**
 ```
-$ git clone --single-branch https://github.com/gpakosz/.tmux.git "/path/to/oh-my-tmux"
+$ git clone --single-branch https://github.com/amartincodes/.tmux.git "/path/to/oh-my-tmux"
 $ mkdir -p ~/.config/tmux
 $ ln -s /path/to/oh-my-tmux/.tmux.conf ~/.config/tmux/tmux.conf
 $ cp /path/to/oh-my-tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
@@ -66,7 +66,7 @@ $ cp /path/to/oh-my-tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
 **Manual installation and making it editable `~/.config/tmux`**
 ```
 $ mkdir -p ~/.config/tmux
-$ git clone --single-branch https://github.com/gpakosz/.tmux.git ~/.config/tmux/oh-my-tmux
+$ git clone --single-branch https://github.com/amartincodes/.tmux.git ~/.config/tmux/oh-my-tmux
 $ ln -s ~/.config/tmux/oh-my-tmux/.tmux.conf ~/.config/tmux/tmux.conf
 $ ln -s ~/.config/tmux/oh-my-tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
 ```
