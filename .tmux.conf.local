@@ -269,19 +269,33 @@ tmux_conf_theme_right_separator_sub="|"
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} "
-#tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} | #{pretty_pane_current_path} "
-tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
+# tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} "
+tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} | #{pretty_pane_current_path} "
+#tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
+# tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}, #{location}, %R , %d %b | #{username}#{root} | #{hostname} "
+
+# Alternative status bar configurations (uncomment to use):
+# With system metrics:
+tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}|CPU: #{cpu_percentage} RAM: #{ram_percentage} | #{location}  %R  %d %b | #{online} #{username}#{root}@#{hostname} "
+
+# Minimal with just location and time:
+# tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}, #{location} | %H:%M | #{username}#{root}@#{hostname} "
+
+# With disk usage:
+#tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}, CPU: #{cpu_percentage} | Disk: #{disk_usage} | #{location}, %R | #{username}#{root} | #{hostname} "
+
+# Compact version:
+#tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}, #{cpu_percentage} | #{ram_percentage} | #{location} | %H:%M | #{hostname} "
 
 # status left style
-tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_6,$tmux_conf_theme_colour_7,$tmux_conf_theme_colour_8"
-tmux_conf_theme_status_left_bg="$tmux_conf_theme_colour_9,$tmux_conf_theme_colour_10,$tmux_conf_theme_colour_11"
+tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_6,$tmux_conf_theme_colour_6,$tmux_conf_theme_colour_13"
+tmux_conf_theme_status_left_bg="$tmux_conf_theme_colour_9,$tmux_conf_theme_colour_11,$tmux_conf_theme_colour_15"
 tmux_conf_theme_status_left_attr="bold,none,none"
 
 # status right style
-tmux_conf_theme_status_right_fg="$tmux_conf_theme_colour_12,$tmux_conf_theme_colour_13,$tmux_conf_theme_colour_14"
-tmux_conf_theme_status_right_bg="$tmux_conf_theme_colour_15,$tmux_conf_theme_colour_16,$tmux_conf_theme_colour_17"
-tmux_conf_theme_status_right_attr="none,none,bold"
+tmux_conf_theme_status_right_fg="$tmux_conf_theme_colour_12,$tmux_conf_theme_colour_13,$tmux_conf_theme_colour_13,$tmux_conf_theme_colour_14"
+tmux_conf_theme_status_right_bg="$tmux_conf_theme_colour_15,$tmux_conf_theme_colour_15,$tmux_conf_theme_colour_16,$tmux_conf_theme_colour_17"
+tmux_conf_theme_status_right_attr="bold,none,none,bold"
 
 # pairing indicator
 tmux_conf_theme_pairing="⚇"                 # U+2687
@@ -483,9 +497,71 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 #
 # # usage: #{online}
 # online() {
-#   ping -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
+# ping -c 1 1.1.1.1 >/dev/null 2>&1 && printf '󰖩' || printf '󰖪'
 # }
 #
+# # usage: #{cpu_percentage}
+# cpu_percentage() {
+#   if command -v iostat >/dev/null 2>&1; then
+#     iostat -c 1 2 | tail -1 | awk '{print 100 - $NF"%"}'
+#   else
+#     top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
+#   fi
+# }
+#
+# # usage: #{ram_percentage}
+# ram_percentage() {
+#   if command -v free >/dev/null 2>&1; then
+#     free | grep Mem | awk '{printf "%.0f%%", $3/$2 * 100.0}'
+#   else
+#     vm_stat | awk '/Pages active/ {active=$3} /Pages wired/ {wired=$4} /Pages free/ {free=$3} END {total=active+wired+free; used=active+wired; printf "%.0f%%", used/total*100}'
+#   fi
+# }
+#
+# # usage: #{disk_usage}
+# disk_usage() {
+#   df -h / | awk 'NR==2 {print $5}'
+# }
+#
+# # usage: #{test}
+# test() {
+#   printf "It works!"
+# }
+#
+# # usage: #{location}
+# location() {
+#   cache_file="${TMUX_TMPDIR:-/tmp}/tmux_location_cache"
+#   cache_time=300  # 5 minutes
+#   force_refresh=0
+#
+#   # Fetch current country using ip-api.com (45 requests/minute limit)
+#   info=$(curl -s -m 2 "http://ip-api.com/json/?fields=countryCode" 2>/dev/null)
+#   current_country=$(echo "$info" | grep -o '"countryCode":"[^"]*"' | cut -d'"' -f4)
+#
+#   # Check if we have a cached value
+#   if [ -f "$cache_file" ]; then
+#     cached_country=$(cat "$cache_file")
+#     cache_age=$(($(date +%s) - $(date -r "$cache_file" +%s 2>/dev/null || stat -c %Y "$cache_file" 2>/dev/null || echo 0)))
+#
+#     # If country changed (VPN switch), force refresh
+#     if [ -n "$current_country" ] && [ "$current_country" != "$cached_country" ]; then
+#       force_refresh=1
+#     fi
+#
+#     # If cache is fresh and country hasn't changed, return cached value
+#     if [ "$cache_age" -lt "$cache_time" ] && [ "$force_refresh" -eq 0 ]; then
+#       printf "%s" "$cached_country"
+#       return
+#     fi
+#   fi
+#
+#   # Return result or fallback
+#   if [ -n "$current_country" ]; then
+#     printf "%s" "$current_country" | tee "$cache_file"
+#   else
+#     printf "Offline" | tee "$cache_file"
+#   fi
+# }
 # # usage: #{wan_ip_v4}
 # wan_ip_v4() {
 #   curl -f -s -m 2 -4 ifconfig.me
