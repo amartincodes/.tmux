@@ -280,9 +280,17 @@ tmux_conf_theme_right_separator_sub="|"
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
+#
+# default status left configuration:
 # tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} "
-tmux_conf_theme_status_left=" ❐ #S | #(cd '#{pane_current_path}' 2>/dev/null && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed 's/^/ /' || echo '~') | #{pretty_pane_current_path} "
+# shows session name, git branch, and current directory (basename)
+# tmux_conf_theme_status_left=" ❐ #S | #(cd '#{pane_current_path}' 2>/dev/null && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed 's/^/ /' || echo '~') | #(cd '#{pretty_pane_current_path}) "
+# shows session name, git branch, and current directory (tilde for home, basename otherwise)
+tmux_conf_theme_status_left=" ❐ #S | #(cd '#{pane_current_path}' 2>/dev/null && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed 's/^/ /' || echo '~') | #([ '#{pane_current_path}' = '$HOME' ] && echo '~' || basename '#{pane_current_path}') "
+#
+# default status right configuration:
 # tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
+# simplified status right configuration:
 # tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}, #{location}, %R , %d %b | #{username}#{root} | #{hostname} "
 
 # Alternative status bar configurations (uncomment to use):
