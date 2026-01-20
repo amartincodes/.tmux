@@ -521,20 +521,52 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 #
 # # usage: #{cpu_percentage}
 # cpu_percentage() {
-#   if command -v iostat >/dev/null 2>&1; then
-#     iostat -c 1 2 | tail -1 | awk '{print 100 - $NF"%"}'
-#   else
-#     top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
-#   fi
+#   case "$(uname -s)" in
+#     Darwin)
+#       # macOS
+#       top -l 2 | grep "CPU usage" | tail -1 | awk '{print $3}' | sed 's/%//'| awk '{printf "%.0f%%", 100-$1}'
+#       ;;
+#     Linux)
+#       if command -v iostat >/dev/null 2>&1; then
+#         iostat -c 1 2 | tail -1 | awk '{print 100 - $NF"%"}'
+#       else
+#         top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
+#       fi
+#       ;;
+#     *)
+#       printf "N/A"
+#       ;;
+#   esac
 # }
 #
 # # usage: #{ram_percentage}
 # ram_percentage() {
-#   if command -v free >/dev/null 2>&1; then
-#     free | grep Mem | awk '{printf "%.0f%%", $3/$2 * 100.0}'
-#   else
-#     vm_stat | awk '/Pages active/ {active=$3} /Pages wired/ {wired=$4} /Pages free/ {free=$3} END {total=active+wired+free; used=active+wired; printf "%.0f%%", used/total*100}'
-#   fi
+#   case "$(uname -s)" in
+#     Darwin)
+#       # macOS - use vm_stat and calculate memory usage
+#       vm_stat | awk '
+#         /Pages active/ { gsub(/\./, "", $3); active=$3 }
+#         /Pages wired/ { gsub(/\./, "", $4); wired=$4 }
+#         /Pages inactive/ { gsub(/\./, "", $3); inactive=$3 }
+#         /Pages free/ { gsub(/\./, "", $3); free=$3 }
+#         END {
+#           total = active + wired + inactive + free
+#           used = active + wired
+#           if (total > 0) printf "%.0f%%", (used/total)*100
+#           else printf "N/A"
+#         }'
+#       ;;
+#     Linux)
+#       if command -v free >/dev/null 2>&1; then
+#         free | grep Mem | awk '{printf "%.0f%%", $3/$2 * 100.0}'
+#       else
+#         printf "N/A"
+#       fi
+#       ;;
+#     *)
+#       printf "N/A"
+#       ;;
+#   esac
 # }
 #
 # # usage: #{disk_usage}
