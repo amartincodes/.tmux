@@ -540,8 +540,8 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 # ram_percentage() {
 #   case "$(uname -s)" in
 #     Darwin)
-#       # macOS - use top to get memory usage (PhysMem line)
-#       top -l 1 | grep PhysMem | awk '{used=$2; unused=$6; gsub(/[^0-9.]/,"",used); gsub(/[^0-9.]/,"",unused); if($2~/G/)used*=1024; if($6~/G/)unused*=1024; total=used+unused; if(total>0)printf "%.0f%%",(used/total)*100; else printf "N/A"}'
+#       # macOS - use vm_stat to match Activity Monitor (App Memory + Wired + Compressed)
+#       vm_stat | awk -v total=$(sysctl -n hw.memsize) '/page size/{p=$8}/Anonymous pages/{a=$3}/Pages wired/{w=$4}/Pages occupied by compressor/{c=$5}END{printf "%.0f%%",(a+w+c)*p/total*100}'
 #       ;;
 #     Linux)
 #       if command -v free >/dev/null 2>&1; then
