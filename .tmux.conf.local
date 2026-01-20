@@ -523,15 +523,12 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 # cpu_percentage() {
 #   case "$(uname -s)" in
 #     Darwin)
-#       # macOS
-#       top -l 2 | grep "CPU usage" | tail -1 | awk '{print $3}' | sed 's/%//'| awk '{printf "%.0f%%", 100-$1}'
+#       # macOS - add user + sys for actual CPU usage
+#       top -l 2 | grep "CPU usage" | tail -1 | awk '{gsub(/%|,/,""); printf "%.1f%%", $3+$5}'
 #       ;;
 #     Linux)
-#       if command -v iostat >/dev/null 2>&1; then
-#         iostat -c 1 2 | tail -1 | awk '{print 100 - $NF"%"}'
-#       else
-#         top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
-#       fi
+#       # Linux - add user + sys for actual CPU usage
+#       top -bn2 -d 0.5 | grep "Cpu(s)" | tail -1 | sed 's/,//g' | awk '{printf "%.1f%%", $2+$4}'
 #       ;;
 #     *)
 #       printf "N/A"
