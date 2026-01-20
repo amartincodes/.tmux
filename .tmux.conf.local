@@ -540,21 +540,8 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 # ram_percentage() {
 #   case "$(uname -s)" in
 #     Darwin)
-#       # macOS - use top to get memory usage (PhysMem line: "used ... unused")
-#       top -l 1 | grep PhysMem | awk '{
-#         # Extract used ($2) and unused ($6)
-#         used_str = $2; unused_str = $6;
-#         # Remove non-numeric chars
-#         used = used_str; gsub(/[^0-9.]/, "", used);
-#         unused = unused_str; gsub(/[^0-9.]/, "", unused);
-#         # Convert to MB if needed
-#         if (used_str ~ /G/) used *= 1024;
-#         if (unused_str ~ /G/) unused *= 1024;
-#         # Calculate percentage
-#         total = used + unused;
-#         if (total > 0) printf "%.0f%%", (used/total)*100;
-#         else printf "N/A";
-#       }'
+#       # macOS - use top to get memory usage (PhysMem line)
+#       top -l 1 | grep PhysMem | awk '{used=$2; unused=$6; gsub(/[^0-9.]/,"",used); gsub(/[^0-9.]/,"",unused); if($2~/G/)used*=1024; if($6~/G/)unused*=1024; total=used+unused; if(total>0)printf "%.0f%%",(used/total)*100; else printf "N/A"}'
 #       ;;
 #     Linux)
 #       if command -v free >/dev/null 2>&1; then
